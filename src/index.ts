@@ -1,2 +1,5 @@
-export { resolverNamesInSchema } from './schema-info';
-export { loadSchemaFromFile } from './schema-load';
+export {resolverNamesInSchema } from './schema-info';
+export {
+    loadSchemaFromFile,
+    loadSchemaFromFileSync
+} from './schema-load';
