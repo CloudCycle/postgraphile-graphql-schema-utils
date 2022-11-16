@@ -1,0 +1,45 @@
+name: Build CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-n-publish:
+
+    name: Build and publish NPM to AWS Code Artifact
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    strategy:
+      matrix:
+        node-version: [14.x]
+
+    steps:
+      - uses: actions/checkout@main
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: eu-west-1
+          role-to-assume: arn:aws:iam::201015722121:role/backend-infra-github-publish-code-artifact-role
+          role-session-name: device_to_backend_schema_publish
+          role-duration-seconds: 900
+
+      - name: Set up Node ${{ matrix.python-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: 'https://cloudcycle-platform-201015722121.d.codeartifact.eu-west-1.amazonaws.com/npm/cloudcycle-platform'
+
+      - name: Build
+        run: npm ci
+
+      - name: Publish distribution 📦 to NPM AWS Code Artifact
+        run: |
+          aws codeartifact login --tool twine --repository cloudcycle-platform --domain cloudcycle-platform --domain-owner 201015722121 &&
+          npm publish
