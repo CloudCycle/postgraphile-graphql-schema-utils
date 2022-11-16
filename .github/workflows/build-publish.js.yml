@@ -37,9 +37,11 @@ jobs:
           registry-url: 'https://cloudcycle-platform-201015722121.d.codeartifact.eu-west-1.amazonaws.com/npm/cloudcycle-platform'
 
       - name: Build
-        run: npm ci
+        run: |
+          aws codeartifact login --tool npm --repository cloudcycle-platform --domain cloudcycle-platform --domain-owner 201015722121 &&
+          npm ci
 
       - name: Publish distribution 📦 to NPM AWS Code Artifact
         run: |
-          aws codeartifact login --tool twine --repository cloudcycle-platform --domain cloudcycle-platform --domain-owner 201015722121 &&
+          aws codeartifact login --tool npm --repository cloudcycle-platform --domain cloudcycle-platform --domain-owner 201015722121 &&
           npm publish
