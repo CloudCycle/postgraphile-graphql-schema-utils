@@ -41,6 +41,6 @@
     "@graphql-tools/load": "^7.7.7"
   },
   "peerDependencies": {
-    "graphql": ">=15.4"
+    "graphql": ">=14.7"
   }
 }
